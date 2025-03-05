@@ -66,4 +66,3 @@ For `POST /books`, the JSON input format is:
 ## License
 This project is licensed under the Apache-2.0 License.
 ```
-
