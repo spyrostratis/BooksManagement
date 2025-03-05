@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <title>Library</title>
+    <style>
+        body {
+            background-image: url('bcg.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+    </style>
+    <style>h1{text-align: center;} </style>
+    <style>p{text-align: center;} </style>
+    <style>h2{text-align: center;} </style>
+</head>
+<body>
+    <form>
+        <h1>Books Info</h1>
+          
+        <p><label for = "author">Author:</label><p>
+        <p><input type = "text" id="author" name="author" required></p>
+          
+        <p><label for = "title">Title:</label></p>
+        <p><input type = "text" id="title" name="title" required></p>
+
+        <p><label for = "genre">Genre:</label></p>
+        <p>
+          <select id = "genre" name="genre" required>
+            <option value = "" disabled selected style="display:none;">--Select Genre--</option>
+            <option value = "Science fiction">Science fiction</option>
+            <option value = "Satire">Satire</option>
+            <option value = "Drama">Drama</option>
+            <option value = "Action and Adventure">Action and Adventure</option>
+            <option value = "Romance">Romance</option>
+            <option value = "Mystery">Mystery</option>
+            <option value = "Horror">Horror</option>
+          </select>
+        </p>
+            <p><label for = "price">Price:</label></p>
+            <p><input type ="number" id="price" name="price" min="0" required></p>
+        <p><br><input type ="button" id="submit"> Add Book</button></p>
+
+        <br><h2>Search Books By Keyword</h2>
+      
+            <p><label for = "keyword">Keyword:</label></p>
+            <p><input type = "text" id="keyword"></p>
+            <p><input type = "button" id="search"> Search</button></p>
+    </form> 
+</body>
+
+    <script type = "text/javascript">
+
+        // Book class constructor
+        class Books{
+            constructor(id, author,title,genre,price){
+                this.id = id;
+                this.author = author;
+                this.title = title;
+                this.genre = genre;
+                this.price = price;
+            }
+        }
+        
+        // Event listener for the submit button
+        document.getElementById('submit').addEventListener('click',async (e)=>{ 
+
+            // Retrieve the values from each input field
+            var id;           
+            const author = document.getElementById('author').value;
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const genre = document.getElementById('genre').value;
+            const book = new Books(id, author,title,genre,price);
+
+            // Check if any field is empty
+            if(author.length=== 0 || title.length === 0 || price.length === 0 || genre == "Select"){
+                    // Display an alert message
+                    alert("All fields must be filled");
+
+            }else{
+                // Set the URL
+                const url = `http://localhost:3000/books`;
+                
+                // Use fetch with POST method to insert a book to the URL
+                const response = await fetch(url,{
+                method:'POST',
+                headers: {
+                    "Content-Type":"application/json"
+                },
+
+                // Convert the book object to a string and send it in the request body
+                body: JSON.stringify(book)
+                });
+                
+                // Print the response to the console
+                const data = await response.json();
+                console.log(data);
+
+                // Display a success message and opens the URL in a new window
+                window.open(url);
+                
+                // Reset all the input values after submit
+                document.getElementById('genre').value = "--Select Genre--";
+                document.getElementById('author').value = "";
+                document.getElementById('title').value = "";
+                document.getElementById('price').value = "";
+
+        }
+    });
+
+        // Event listener for the search button
+        document.getElementById('search').addEventListener('click',async (e)=>{ 
+
+            // Get the value from the search text box
+            const keyword = document.getElementById('keyword').value;
+
+            // If the textbox is empty, display an alert message
+            if(keyword.length === 0 ){
+                alert("Please enter a keyword!");
+            }else{
+                // Set the URL
+                const url1 = `http://localhost:3000/books/${keyword}`;
+
+                // Use fetch with GET method to retrieve books based on the keyword
+                const result = await fetch(url1,{
+                    method:'GET',
+                    headers: {
+                        "Content-Type":"application/json"
+                    }
+                });
+
+                // Open the URL in a new window and reset the search textbox
+                
+                window.open(url1);
+                document.getElementById('search').value = "";
+                
+            }
+
+            
+        });
+
+    </script>
+</html>
